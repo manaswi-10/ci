@@ -1,16 +1,25 @@
-name: Test Self-Hosted Runner
+name: Deploy to AWS EC2
 
-on: [push, pull_request]
+on:
+push:
+branches:
+- main
 
 jobs:
-  test-runner:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+deploy:
+runs-on: self-hosted # Using your EC2 as a self-hosted runner
 
-      - name: Print System Info
-        run: uname -a
+steps:
+- name: Checkout Code
+uses: actions/checkout@v3
 
-      - name: List Files
-        run: ls -alh
+- name: Build Docker Image
+run: docker build -t my-html-app .
+
+- name: Stop and Remove Old Container
+run: |
+docker stop my-html-container || true
+docker rm my-html-container || true
+
+- name: Run New Container
+run: docker run -d -p 80:80 --name my-html-container my-html-app
