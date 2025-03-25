@@ -24,15 +24,15 @@ jobs:
           sudo systemctl enable docker
 
       - name: Build Docker Image
-        run: docker build -t my-html-app .
+        run: sudo docker build -t my-html-app .
 
       - name: Stop and Remove Old Container (if exists)
         run: |
           if [ $(docker ps -q -f name=my-html-container) ]; then
             echo "Stopping existing container..."
-            docker stop my-html-container
-            docker rm my-html-container
+            sudo docker stop my-html-container
+            sudo docker rm my-html-container
           fi
 
       - name: Run New Container
-        run: docker run -d -p 8080:80 --name my-html-container my-html-app
+        run: sudo docker run -d -p 8080:80 --name my-html-container my-html-app
